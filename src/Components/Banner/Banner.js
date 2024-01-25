@@ -6,7 +6,7 @@ import React from 'react';
 import { styled, Container} from '@mui/system';
 import { Typography } from '@mui/material';
 import "../../App.css"
-
+import Carousel from './Carousel';
 //styling components
 const banner = {
   backgroundImage:"url(./banner2.jpg)"
@@ -44,6 +44,7 @@ const Banner = () => {
           </Typography>
     </div>
     </Container>
+    <Carousel/>
     </div>)
 
 };
