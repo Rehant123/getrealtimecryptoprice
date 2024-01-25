@@ -1,9 +1,11 @@
-import React from 'react'
+import React from 'react';
+import { makeStyles, Container } from '@mui/material';
+import Banner from '../Components/Banner/Banner';
 
-const Home = () => {
+export default function Home(){
   return (
-    <div>Home</div>
-  )
+    <div>
+      <Banner />
+    </div>
+  );
 }
-
-export default Home

@@ -19,7 +19,7 @@ const App = () => {
         <Header />
         <Routes>
           {/* Use 'element' instead of 'component' */}
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/coins/:id" element={<CoinPage />} />
         </Routes>
         </CryptoContext>
