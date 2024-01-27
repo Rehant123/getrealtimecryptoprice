@@ -43,8 +43,10 @@ const Banner = () => {
           Get all The information regarding Cryptocurrency
           </Typography>
     </div>
-    </Container>
     <Carousel/>
+    
+    </Container>
+    
     </div>)
 
 };
