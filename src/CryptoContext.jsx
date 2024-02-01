@@ -28,4 +28,5 @@ export default CryptoContextProvider;
 
 export const CryptoState = () => {
   return useContext(Crypto);
+
 };

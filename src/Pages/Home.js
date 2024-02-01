@@ -5,7 +5,7 @@ import Carousel from '../Components/Banner/Carousel';
 import CoinTable from '../Components/CoinTable';
 export default function Home(){
   return (
-    <div style = {{height:"485px"}}> 
+    <div style = {{height:"auto"}}> 
       <Banner />
       <CoinTable/>
     </div>

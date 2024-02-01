@@ -1,177 +1,145 @@
-import React, { useState } from 'react';
-import { CryptoState } from '../CryptoContext';
-import { ThemeProvider } from '@mui/material/styles';  // Correct import statement
-import { Typography, Container,LinearProgress, TableContainer, TableHead } from '@mui/material';
-import { createTheme } from '@mui/material/styles';  // Correct import statement
-import {TextField,Table,TableCell,TableRow} from "@mui/material"
+  import React, { useState, useEffect } from 'react';
+  import {
+    Table,
+    Pagination,
+    TableContainer,
+    TableBody,
+    TableHead,
+    TableRow,
+    TableCell,
+    Typography,
+    Container,
+    TextField,
+  } from '@mui/material';
+  import { useNavigate } from 'react-router-dom';
+  import { CryptoState } from '../CryptoContext';
+  import { ThemeProvider } from '@mui/material/styles';
+  import { createTheme } from '@mui/material/styles';
+  import { numberWithCommas } from './Banner/Carousel';
+  import axios from 'axios';
+  import { fetchList } from '../config/api.js';
+  import coindata from './data.js';
+  import "../App.css"
+  const TableCall = ({ coins, search, page }) => {
+    const b = useNavigate();
+    const { symbol } = CryptoState();
+
+    return (
+      <TableContainer>
+        <Table>
+          <TableHead  style={{ backgroundColor: '#EEBC1D' }}>
+            <TableRow>
+              {['Coin', 'Price', '24h Change', 'Market Cap'].map((item) => {
+                return (
+                  <TableCell
+                    key={item}
+                    style={{
+                      backgroundColor: 'gold',
+                      fontFamily: 'montserrat',
+                      color: 'black',
+                      fontWeight: 'bold',
+                      textAlign: item === 'Coin' ? '' : 'right',
+                    }}
+                  >
+                    {item}
+                  </TableCell>
+                );
+              })}
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {coins.slice((page - 1) * 10, page * 10).map((item) => {
+              const profit = item.price_change_percentage_24h > 0;
+
+              return (
+                <TableRow className = "jud" onClick={() => b(`/coins/${item.id}`)} key={item.name}>
+                  <TableCell component="th" scope="row" style={{ display: 'flex', gap: 15 }}>
+                    <img src={item.image} alt={item.name} height="50" style={{ marginBottom: 10 }} />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ textTransform: 'uppercase', fontSize: 22 }}>{item.symbol}</span>
+                      <span style={{ color: 'darkgrey' }}>{item.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell align="right">
+                    {symbol} {numberWithCommas(item.current_price.toFixed(2))}
+                  </TableCell>
+                  <TableCell align="right" style={{ color: item.price_change_percentage_24h < 0 ? 'red' : 'green' }}>
+                    {profit && '+'}
+                    {item.price_change_percentage_24h}{'%'}
+                  </TableCell>
+                  <TableCell align="right">{symbol} {numberWithCommas(item.market_cap)}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  };
 
 
-import "../App.css"
-const CoinTable = () => {
-  const darkTheme = createTheme({
-    palette: {
-      mode: 'dark',
-    },
-  });
-const [Loading,setLoading] = useState(false)
-const [search,setSearch] = useState("");
 
-const [coins,setCoins] = useState([]);
+  const CoinTable = () => {
+    const darkTheme = createTheme({
+      palette: {
+        mode: 'dark',
+      },
+    });
 
-const fetchCoins = ()=>{
+    const [search, setSearch] = useState('');
+    const [coins, setCoins] = useState([]);
+    const { currency } = CryptoState();
+    const [page, setPage] = useState(1);
 
-  setCoins([
-    {
-      "id": "bitcoin",
-      "symbol": "btc",
-      "name": "Bitcoin",
-      "image": "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1696501400",
-      "current_price": 41431,
-      "market_cap": 811918115588,
-      "price_change_percentage_24h": 4.32546
-    },
-    {
-      "id": "ethereum",
-      "symbol": "eth",
-      "name": "Ethereum",
-      "image": "https://assets.coingecko.com/coins/images/279/large/ethereum.png?1696501628",
-      "current_price": 2259.41,
-      "market_cap": 271663611201,
-      "price_change_percentage_24h": 3.40906
-    },
-    {
-      "id": "tether",
-      "symbol": "usdt",
-      "name": "Tether",
-      "image": "https://assets.coingecko.com/coins/images/325/large/Tether.png?1696501661",
-      "current_price": 1.001,
-      "market_cap": 95666520205,
-      "price_change_percentage_24h": 0.02606
-    },
-    {
-      "id": "binancecoin",
-      "symbol": "bnb",
-      "name": "BNB",
-      "image": "https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png?1696501970",
-      "current_price": 302.47,
-      "market_cap": 46669690770,
-      "price_change_percentage_24h": 3.53901
-    },
-    {
-      "id": "solana",
-      "symbol": "sol",
-      "name": "Solana",
-      "image": "https://assets.coingecko.com/coins/images/4128/large/solana.png?1696504756",
-      "current_price": 92.45,
-      "market_cap": 40074455794,
-      "price_change_percentage_24h": 7.01119
-    },
-    {
-      "id": "ripple",
-      "symbol": "xrp",
-      "name": "XRP",
-      "image": "https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png?1696501442",
-      "current_price": 0.521575,
-      "market_cap": 28352722435,
-      "price_change_percentage_24h": 2.97753
-    },
-    {
-      "id": "usd-coin",
-      "symbol": "usdc",
-      "name": "USDC",
-      "image": "https://assets.coingecko.com/coins/images/6319/large/usdc.png?1696506694",
-      "current_price": 1.001,
-      "market_cap": 26047832916,
-      "price_change_percentage_24h": 0.3111
-    },
-    {
-      "id": "staked-ether",
-      "symbol": "steth",
-      "name": "Lido Staked Ether",
-      "image": "https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1696513206",
-      "current_price": 2257.61,
-      "market_cap": 21135693739,
-      "price_change_percentage_24h": 3.44814
-    },
-    {
-      "id": "cardano",
-      "symbol": "ada",
-      "name": "Cardano",
-      "image": "https://assets.coingecko.com/coins/images/975/large/cardano.png?1696502090",
-      "current_price": 0.485972,
-      "market_cap": 17051564381,
-      "price_change_percentage_24h": 4.32334
-    },
-    {
-      "id": "polkadot",
-      "symbol": "dot",
-      "name": "Polkadot",
-      "image": "https://assets.coingecko.com/coins/images/12171/large/aJGBjJFU_400x400.jpg?1597804776",
-      "current_price": 23.45,
-      "market_cap": 22156937897,
-      "price_change_percentage_24h": 2.345
-    }
-  ])
-  
-}
+    const handlepage =(value)=>{
+      setPage(value);
+      console.log(value)
+    } 
+    const fetchCoins = async () => {
+      try {
+        // const { data } = await axios.get(fetchList(currency));
+        setCoins(coindata);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-useEffect(()=>{
-fetchCoins()
-},[currency])
+    useEffect(() => {
+      fetchCoins();
+    }, [currency]);
 
+    const filteredItems = () => {
+      return coins.filter(
+        (item) =>
+          item.name.toLowerCase().includes(search.toLowerCase()) || item.symbol.toLowerCase().includes(search.toLowerCase())
+      );
+    };
 
-const handleSearch = ()=>{
-  return coins.filter((coin)=>coin.name.toLowerCase().includes(search)||coin.symbol.toLowerCase().includes(search))
-}
-
-
-  return (
-    <ThemeProvider theme={darkTheme}>
-      <Container style={{ textAlign: 'center' }}>
-        <Typography
-          variant="h4"
-          style={{ margin: 18, fontFamily: 'Montserrat', fontWeight: '500' }}
-        >
-          CryptoCurrency By Market Cap
-        </Typography>
-        <TextField onChange = {(e)=>setSearch(e.target.value)}label="Search For a Crypto Currency.."   sx = {{}} size="large"
-        style = {{marginBottom:20,width:"100%"}}
-        variant="outlined" />
-     
-
-
-      
-<TableContainer>
-      {Loading ?<LinearProgress style = {{backgroundColor:"gold"}}/>:
-      <Table style = {{backgroundColor:"gold"}}>
-        <TableHead>
-        {/* <TableCell>Coin</TableCell>
-            <TableCell align="right">Price</TableCell>
-            <TableCell align="right">24h Change</TableCell>
-            <TableCell align="right">Market Cap&nbsp;(g)</TableCell>
-             */}
-             <TableRow>
-
-        {
-          ["Coin", "Price", "24H Change", "Market Cap"].map((item) => {
-            return <TableCell key = {item} style={{ fontFamily: 'Montserrat',
-            fontWeight: 'bold', color: "black", textAlign: item === "Coin" ? "" : "right" }}>
-              {item}
-              </TableCell>;
-          })
+    return (
+      <ThemeProvider theme={darkTheme}>
+        <Container style={{ textAlign: 'center' }}>
+          <Typography variant="h4" style={{ margin: 18, fontFamily: 'Montserrat', fontWeight: '500' }}>
+            CryptoCurrency By Market Cap
+          </Typography>
+          <TextField
+            onChange={(e) => setSearch(e.target.value)}
+            label="Search For a Crypto Currency.."
+            size="large"
+            style={{ marginBottom: 20, width: '100%' }}
+            variant="outlined"
+          />
+          <TableCall coins={filteredItems()} search={search} page={page} />
           
-        }     </TableRow> 
-        </TableHead>
-            
-            
-                  </Table> 
-                    }
-                   </TableContainer>
-    
-         </Container>
+          <Pagination
+            count={Math.ceil(filteredItems().length / 10)}
+            style={{ padding: 20, width: '100%', display: 'flex', justifyContent: 'center' }}
+            onChange={(e,v)=>handlepage(v)}
 
-    </ThemeProvider>
-  );
-};
+          />
+        </Container>
+      </ThemeProvider>
+    );
+  };
 
-export default CoinTable;
+  export default CoinTable;

@@ -12,3 +12,8 @@ a{
   text-decoration: none;
   color:gold;
 }
+
+.jud:hover{
+  background-color: rgb(38, 33, 33);
+  
+}
