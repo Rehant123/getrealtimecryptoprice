@@ -25,15 +25,17 @@ const Header = () => {
     mode:"dark",
   }
  })
-
+const Container = styled('div')(({theme})=>({
+  boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+}))
   return (
     <ThemeProvider theme = {darkTheme}>
     <AppBar color="transparent" position="static">
       <Container>
         <Toolbar>
           <Title onClick={() =>{
-            navigate("/coins/32")
-            console.log("Press enter")
+            navigate("/")
+         
           }}>Crypto Hunter</Title>
           <Select onChange =  {(e)=>setCurrency(e.target.value)} value = {currency} style={{ width: 100, marginLeft: 15 }} variant="outlined">
             <MenuItem value = {"USD"} >USD</MenuItem>

@@ -3,48 +3,38 @@ import { useParams } from 'react-router-dom';
 import { Typography,Container, styled } from '@mui/material';
 import { numberWithCommas } from '../Components/Banner/Carousel';
 import CoinInfo from '../Components/CoinInfo';
+import {LinearProgress} from '@mui/material';
+import axios from 'axios';
+import { SingleCoin } from '../config/api';
+import { CryptoState } from '../CryptoContext';
+
+
+
 const CoinPage = () => {
   const { id } = useParams();
   const [coin, setCoin] = useState();
 
   // Your data
-  const data = {
-    "id": "bitcoin",
-    "symbol": "btc",
-    "name": "Bitcoin",
-    "web_slug": "bitcoin",
-    "asset_platform_id": null,
-    "current_price":3800000,
-    "platforms": {
-      "": ""
-    },
-    "image": {
-      "thumb": "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1696501400",
-      "small": "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1696501400",
-      "large": "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1696501400"
-    },
-    "description": {"en":"Bitcoin is the first successful internet money based on peer-to-peer technology; whereby no central bank or authority is involved in the transaction and production of the Bitcoin currency. "},
-    "market_cap_rank":1,
-    "market_data":{
-      "market_cap":
-      {
-        "usd":25565454,
-        "inr":12233554455,
-      }
-    }
-    
-
-  };
-
-  const [currency,setCurrency] = useState("");
+  const {currency,symbol} = CryptoState();
+  
+const fetcheverycoin = async()=>{
+  try{
+    const {data} = await axios.get(SingleCoin(id));
+    setCoin(data);
+  }
+  
+  catch(Error){
+console.log(Error);
+  }
+ 
+}
 
 
   useEffect(() => {
     // Set coin to the entire data object
-    setCoin(data);
+    fetcheverycoin();
   }, []);
 
-  console.log(coin);
 
   const ContainerStyled = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -86,13 +76,13 @@ const CoinPage = () => {
     },
   }))
 
-
+  if (!coin) return <LinearProgress style={{ backgroundColor: "gold" }} />;
   return (
     <ContainerStyled>
       <Sidebar>
         <img src={coin?.image.large} alt='Coin Image' />
         <Typography variant="h3" sx={{ fontWeight: "bold", marginBottom: "20", fontFamily: "Montserrat" }}>{coin?.name}</Typography>
-        <Typography sx={{ marginBottom: "20", fontFamily: "Montserrat", marginTop: "20px" }}>{data.description["en"].split(".")[0]}</Typography>
+        <Typography sx={{ marginBottom: "20", fontFamily: "Montserrat", marginTop: "20px" }}>{coin?.description["en"].split(".")[0]}</Typography>
 
         <MarketData>
           <span style={{ display: "flex" }}>
@@ -103,13 +93,22 @@ const CoinPage = () => {
           <span style={{ display: "flex" }}>
             <Typography variant="h5" style={{ fontFamily: "Montserrat", fontWeight: "bold" }}>Current Price: </Typography>
             &nbsp;&nbsp;
-            <Typography variant="h5" style={{ fontFamily: "Montserrat" }}>{coin?.market_cap_rank}{data.current_price}</Typography>
+            <Typography variant="h5" style={{ fontFamily: "Montserrat" }}>{coin?.market_cap_rank}{coin?.current_price}</Typography>
           </span>
           <span style={{ display: "flex" }}>
             <Typography variant="h5" style={{ fontFamily: "Montserrat", fontWeight: "bold" }}>Market Cap : </Typography>
             &nbsp;&nbsp;
-            <Typography variant="h5" style={{ fontFamily: "Montserrat" }}>{}</Typography>
-          </span>
+            <Typography variant="h5" style={{ fontFamily: "Montserrat" }}>
+             {console.log("here it is")}
+             {console.log(currency)}
+             {console.log(coin)}
+             {symbol}{" "}
+              {numberWithCommas(
+                coin?.market_data.market_cap[currency.toLowerCase()]
+                  .toString()
+                  .slice(0, -6)
+              )}
+</Typography>  </span>
         </MarketData>
       </Sidebar>
 

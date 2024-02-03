@@ -23,4 +23,4 @@ const SelectedButton = ({children,selected,onClick}) => {
   )
 }
 
-export default SelectedButton
+export default SelectedButton;

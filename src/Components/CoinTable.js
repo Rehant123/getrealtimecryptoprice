@@ -18,12 +18,12 @@
   import { numberWithCommas } from './Banner/Carousel';
   import axios from 'axios';
   import { fetchList } from '../config/api.js';
-  import coindata from './data.js';
+  
   import "../App.css"
   const TableCall = ({ coins, search, page }) => {
     const b = useNavigate();
     const { symbol } = CryptoState();
-
+   
     return (
       <TableContainer>
         <Table>
@@ -91,17 +91,22 @@
     const [coins, setCoins] = useState([]);
     const { currency } = CryptoState();
     const [page, setPage] = useState(1);
-
+    const [loading,setLoading] = useState(false);
     const handlepage =(value)=>{
       setPage(value);
       console.log(value)
     } 
     const fetchCoins = async () => {
+      setLoading(true);
       try {
-        // const { data } = await axios.get(fetchList(currency));
-        setCoins(coindata);
+        
+        const { data } = await axios.get(fetchList(currency));
+        console.log(data)
+        setCoins(data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
+        setLoading(false);
       }
     };
 
