@@ -3,7 +3,8 @@ import { Container, AppBar, Toolbar, Typography, Select, MenuItem, styled, Theme
 import { useNavigate } from 'react-router-dom';
 import { CryptoState } from '../CryptoContext';
 import { useState } from 'react';
-
+import AuthModal from './Authentication/AuthModal';
+import UserSidebar from './UserSidebar';
 
 const Title = styled(Typography)({
   flex: 1,
@@ -15,7 +16,8 @@ const Title = styled(Typography)({
 
 const Header = () => {
   //import the global state from the context
-  const {currency,symbol,setCurrency} = CryptoState();
+  const cryptostate = CryptoState();
+  const {currency,symbol,setCurrency,user} = cryptostate;
 
   
   const navigate = useNavigate();
@@ -25,9 +27,6 @@ const Header = () => {
     mode:"dark",
   }
  })
-const Container = styled('div')(({theme})=>({
-  boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-}))
   return (
     <ThemeProvider theme = {darkTheme}>
     <AppBar color="transparent" position="static">
@@ -37,10 +36,20 @@ const Container = styled('div')(({theme})=>({
             navigate("/")
          
           }}>Crypto Hunter</Title>
-          <Select onChange =  {(e)=>setCurrency(e.target.value)} value = {currency} style={{ width: 100, marginLeft: 15 }} variant="outlined">
-            <MenuItem value = {"USD"} >USD</MenuItem>
-            <MenuItem value = {"INR"} >INR</MenuItem>
-          </Select>
+        <Select
+         variant="outlined"
+         labelId="demo-simple-select-label"
+  onChange={(e) => setCurrency(e.target.value)}
+  value={currency}
+  style={{ width: "85px", height: "40px", marginLeft: "15px" }}
+  id="demo-simple-select" 
+>
+  <MenuItem value={"USD"}>USD</MenuItem>
+  <MenuItem value={"INR"}>INR</MenuItem>
+</Select>
+
+            
+          {user?<UserSidebar/>:<AuthModal></AuthModal>}
         </Toolbar>
       </Container>
     </AppBar>

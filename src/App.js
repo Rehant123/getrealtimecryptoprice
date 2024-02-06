@@ -5,6 +5,8 @@ import Home from './Pages/Home';
 import CoinPage from './Pages/CoinPage';
 import "./App.css"
 import CryptoContext   from './CryptoContext';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const App = () => {
   const containerStyle = {
     backgroundColor: '#000000',
@@ -22,6 +24,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/coins/:id" element={<CoinPage />} />
         </Routes>
+        <ToastContainer position="bottom-center" />
         </CryptoContext>
       </BrowserRouter>
     </div>

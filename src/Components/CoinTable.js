@@ -9,7 +9,7 @@
     TableCell,
     Typography,
     Container,
-    TextField,
+    TextField,LinearProgress
   } from '@mui/material';
   import { useNavigate } from 'react-router-dom';
   import { CryptoState } from '../CryptoContext';
@@ -88,30 +88,18 @@
     });
 
     const [search, setSearch] = useState('');
-    const [coins, setCoins] = useState([]);
-    const { currency } = CryptoState();
+    const cryptostate = CryptoState();
+    const { currency,coins,loading,setLoading,setCoins,fetchCoins} =cryptostate;
     const [page, setPage] = useState(1);
-    const [loading,setLoading] = useState(false);
     const handlepage =(value)=>{
       setPage(value);
       console.log(value)
     } 
-    const fetchCoins = async () => {
-      setLoading(true);
-      try {
-        
-        const { data } = await axios.get(fetchList(currency));
-        console.log(data)
-        setCoins(data);
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-        setLoading(false);
-      }
-    };
+   
 
     useEffect(() => {
       fetchCoins();
+      {console.log(loading)}
     }, [currency]);
 
     const filteredItems = () => {
@@ -134,7 +122,10 @@
             style={{ marginBottom: 20, width: '100%' }}
             variant="outlined"
           />
-          <TableCall coins={filteredItems()} search={search} page={page} />
+           {loading ? (
+            <LinearProgress style={{ backgroundColor: "gold" }} />
+          ) :<TableCall coins={filteredItems()} search={search} page={page} />}
+          {console.log(coins)}
           
           <Pagination
             count={Math.ceil(filteredItems().length / 10)}
