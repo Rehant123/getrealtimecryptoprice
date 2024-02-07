@@ -99,7 +99,8 @@
 
     useEffect(() => {
       fetchCoins();
-      {console.log(loading)}
+      
+
     }, [currency]);
 
     const filteredItems = () => {
@@ -125,7 +126,7 @@
            {loading ? (
             <LinearProgress style={{ backgroundColor: "gold" }} />
           ) :<TableCall coins={filteredItems()} search={search} page={page} />}
-          {console.log(coins)}
+          
           
           <Pagination
             count={Math.ceil(filteredItems().length / 10)}

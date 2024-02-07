@@ -16,8 +16,9 @@ const Title = styled(Typography)({
 
 const Header = () => {
   //import the global state from the context
-  const cryptostate = CryptoState();
-  const {currency,symbol,setCurrency,user} = cryptostate;
+  const crypto = CryptoState();
+    
+  const {currency,symbol,setCurrency,user} = crypto;
 
   
   const navigate = useNavigate();

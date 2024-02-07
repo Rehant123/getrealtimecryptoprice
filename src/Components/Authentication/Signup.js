@@ -20,7 +20,7 @@ const Signup = ({ handleClose }) => {
     // Add your signup logic and validation here
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(result);
+
       toast.success(`Welcome, ${email}  ✅`);
       handleClose();
     } catch (error) {

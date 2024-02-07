@@ -21,7 +21,8 @@ const CoinInfo = () => {
     const [historicaldata, setHistoricalData] = useState([]);
     const [days, setDays] = useState(1);
 
-    const { currency } = CryptoState();
+    const crypto = CryptoState();
+    const {currency} = crypto;
     console.log(currency);
     const { id } = useParams();
 
@@ -29,7 +30,7 @@ const CoinInfo = () => {
         try {
             const { data } = await axios.get(HistoricalChart(id, days, currency));
             setHistoricalData(data.prices);
-            console.log(data.prices)
+            
         } catch (error) {
             console.error("Error fetching historical data:", error);
         }
